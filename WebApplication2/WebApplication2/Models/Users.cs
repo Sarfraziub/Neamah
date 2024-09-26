@@ -15,6 +15,7 @@ namespace WebApplication2.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Department { get; set; }
+        public bool? IsAdmin { get; set; }
         [NotMapped]
         public string AssignDevice { get; set; }
         public ICollection<ProductAssociation> associations { get; set; }

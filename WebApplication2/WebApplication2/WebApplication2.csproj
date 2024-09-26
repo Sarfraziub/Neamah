@@ -174,6 +174,10 @@
     <Compile Include="Migrations\202409260708169_change-columns.designer.cs">
       <DependentUpon>202409260708169_change-columns.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202409261729416_IsAdminField.cs" />
+    <Compile Include="Migrations\202409261729416_IsAdminField.designer.cs">
+      <DependentUpon>202409261729416_IsAdminField.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\ProductAssociation.cs" />
@@ -291,6 +295,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202409260708169_change-columns.resx">
       <DependentUpon>202409260708169_change-columns.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202409261729416_IsAdminField.resx">
+      <DependentUpon>202409261729416_IsAdminField.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

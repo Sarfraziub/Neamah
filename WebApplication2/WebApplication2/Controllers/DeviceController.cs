@@ -23,7 +23,23 @@ namespace WebApplication1.Controllers
         }
         public ActionResult Index()
         {
-            return View(_context.Devices.ToList());
+            string userName = User.Identity.Name.Split('\\')[1].ToString();
+            Users user = _context.Users.Where(x => x.FirstName == userName).FirstOrDefault();
+            if (user == null)
+            {
+                Users addUser = new Users() { FirstName = userName, CreatedAt = DateTime.Now, IsAdmin = true };
+                _context.Users.Add(addUser);
+                _context.SaveChanges();
+            };
+            bool? isAdmin = _context.Users.Where(x => x.FirstName == userName).FirstOrDefault().IsAdmin;
+            var viewModel = new DeviceViewModel
+            {
+                Devices = _context.Devices.ToList(),
+                IsAdmin = isAdmin??false
+            };
+            return View(viewModel);
+
+            //return View(_context.Devices.ToList());
         }
         public ActionResult CreateDevice()
         {
@@ -119,7 +135,40 @@ namespace WebApplication1.Controllers
             };
             return View(viewModel);
         }
-
+        public ActionResult View(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Device device = _context.Devices.FirstOrDefault(m => m.DeviceId == id);
+            if (device == null)
+            {
+                return HttpNotFound();
+            }
+            var staffChanges = _context.StaffChanges.Where(sc => sc.DeviceId == id).ToList();
+            var categoryList = new List<SelectListItem>
+    {
+            new SelectListItem { Value = "1", Text = "PC" },
+            new SelectListItem { Value = "2", Text = "Monitor" },
+            new SelectListItem { Value = "3", Text = "Scanner" },
+            new SelectListItem { Value = "4", Text = "Printer" },
+            new SelectListItem { Value = "5", Text = "3 in 1  Printer" },
+            new SelectListItem { Value = "6", Text = "Laptop" },
+            new SelectListItem { Value = "7", Text = "Tablet" },
+            new SelectListItem { Value = "8", Text = "Mobile" },
+            new SelectListItem { Value = "9", Text = "Telephon" },
+            new SelectListItem { Value = "10", Text = "Camera" },
+            new SelectListItem { Value = "11", Text = "Speaker" }
+    };
+            var viewModel = new DeviceEditViewModel
+            {
+                Device = device,
+                StaffChanges = staffChanges,
+                CategoryList = categoryList
+            };
+            return View(viewModel);
+        }
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -234,6 +283,11 @@ namespace WebApplication1.Controllers
             return category?.Text;
         }
 
+    }
+    public class DeviceViewModel
+    {
+        public IEnumerable<Device> Devices { get; set; }
+        public bool IsAdmin { get; set; }
     }
 
 }
