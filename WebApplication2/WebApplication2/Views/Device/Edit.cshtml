@@ -1,0 +1,241 @@
+﻿@model WebApplication2.ViewModel.DeviceEditViewModel
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Edit";
+}
+
+<link href="~/Content/SearchBar.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="container mt-5">
+    <h2 class="mb-4">Edit Device</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        @Html.HiddenFor(model => model.Device.DeviceId)
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Device Details</h5>
+            </div>
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Device.TagNumber, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Device.TagNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Device.TagNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Device.Category, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.Device.CategoryId, Model.CategoryList, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Device.CategoryId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                @*<div class="form-group row">
+                    @Html.LabelFor(model => model.Device.Note, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Device.Note, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Device.Note, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+            <div class="form-group row">
+                @Html.LabelFor(model => model.Device.Status, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                <div class="col-md-6">
+                    @Html.EnumDropDownListFor(model => model.Device.Status, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Device.Status, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @*<div id="StaffInfo" style="@(!Model.Device.IsStored ? "display: none;" : "")" class="mt-4">*@
+                <div id="StaffInfo" style="@(Model.Device.Status != WebApplication2.Models.StatusOption.IsStored? "display: none;" : "")" class="mt-4">
+
+                    <h5 class="mb-3 text-white bg-dark p-2 rounded">Staff Information</h5>
+
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Device.StaffId, htmlAttributes: new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            <div class="input-group mb-3">
+                                @Html.EditorFor(model => model.Device.StaffId, new { htmlAttributes = new { @class = "form-control", id = "staffIdInput", placeholder = "Enter Staff ID" } })
+                                <div class="input-group-append">
+                                    <button id="searchButton" class="btn btn-primary" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Device.StaffId, "", new { @class = "text-danger" })
+                            <div id="messageContainer" class="mt-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Device.StaffName, htmlAttributes: new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Device.StaffName, new { htmlAttributes = new { @class = "form-control", id = "nameInput", placeholder = "Staff Name" } })
+                            @Html.ValidationMessageFor(model => model.Device.StaffName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Device.Department, htmlAttributes: new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Device.Department, new { htmlAttributes = new { @class = "form-control", id = "departmentInput", placeholder = "Department" } })
+                            @Html.ValidationMessageFor(model => model.Device.Department, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.Device.Note, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Device.Note, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Device.Note, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <a href="/Device/Index" class="btn btn-dark">Cancel</a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus-circle"></i> Edit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Devices List</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        @Html.Grid(Model.StaffChanges).Named("UserGrid").Columns(c =>
+                   {
+                       c.Add(x => x.DeviceId).Titled("Device ID").Sortable(true);
+                       c.Add(x => x.StaffId).Titled("Staff Id").Sortable(true);
+                       c.Add(x => x.StaffName).Titled("Staff Name").Sortable(true);
+                       c.Add(x => x.Department).Titled("Department").Sortable(true).Filterable(true);
+                       c.Add(x => x.ChangeNote).Titled("Note").Sortable(true);
+                       c.Add(x => x.ChangedBy).Titled("Changed By").Sortable(true);
+                       c.Add()
+                       .Titled("Date Time")
+                       .Filterable(true)
+                       .Sortable(true)
+                       .RenderValueAs(o => o.DateTime.ToString("d MMM, yyyy h:mm tt"));
+                   }).WithPaging(15).EmptyText("No data found")
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @*<hr />
+            <h4 class="mt-4">Staff Changes</h4>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @Html.Grid(Model.StaffChanges).Named("UserGrid").Columns(c =>
+                            {
+                                c.Add(x => x.DeviceId).Titled("Device ID").Filterable(true).Sortable(true);
+                                c.Add(x => x.StaffId).Titled("Staff Id").Filterable(true).Sortable(true);
+                                c.Add(x => x.StaffName).Titled("Staff Name").Filterable(true).Sortable(true);
+                                c.Add(x => x.Department).Titled("Department").Filterable(true).Sortable(true);
+                                c.Add(x => x.ChangedBy).Titled("User").Filterable(true).Sortable(true);
+                                c.Add()
+                                    .Titled("Date Time")
+                                    .Filterable(true)
+                                    .Sortable(true)
+                                    .RenderValueAs(o => o.DateTime.ToString("d MMM, yyyy h:mm tt"));
+                            }).WithPaging(5).EmptyText("No data found");
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <div>
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary" })
+            </div>*@
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#searchButton').click(function (event) {
+            event.preventDefault();
+
+            var staffId = $('#staffIdInput').val();
+            var messageContainer = $('#messageContainer');
+            messageContainer.empty();
+
+            if (staffId) {
+                $.ajax({
+                    url: '/api/staff/' + encodeURIComponent(staffId),
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        const userData = JSON.parse(data);
+                        if (userData && userData.length > 0) {
+                            $('#nameInput').val(userData[0].staff_name_en);
+                            $('#departmentInput').val(userData[0].department_en);
+                        } else {
+                            messageContainer.html('<div class="text-danger">No data found for the given Staff ID.</div>');
+                        }
+                    },
+                    error: function () {
+                        messageContainer.html('<div class="text-danger">Staff ID is not valid.</div>');
+                    }
+                });
+            } else {
+                messageContainer.html('<div class="text-danger">Please enter a staff ID.</div>');
+            }
+        });
+
+        $('#IsReservedCheck').change(function () {
+            if ($(this).is(':checked')) {
+                $('#StaffInfo').show(); // Show staff info when checked
+            } else {
+                $('#StaffInfo').hide(); // Hide staff info when unchecked
+            }
+        });
+    });
+</script>
+
+@section styles {
+    @Styles.Render("~/Content/Gridmvc")
+    <style>
+        .table thead th {
+            background-color: #343a40; /* Dark gray background */
+            color: white !important; /* White text */
+        }
+
+            .table thead th a {
+                color: white !important; /* White text */
+            }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+    </style>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/Gridmvc")
+}

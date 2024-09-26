@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "AssignDevice";
+}
+
+<h2>AssignDevice</h2>
+<form action="@Url.Action("AssignDevice", "Device")" method="post">
+    <div class="form-select">
+        <input type="hidden" name="deviceId" value="@ViewData["DeviceId"]" />
+        <label for="user">Assign to User:</label>
+        <select class="form-select" name="userId" id="user">
+            <option value="">Select a user</option>
+            @foreach (var users in Model)
+            {
+                <option value="@users.UserId">@users.FirstName @users.LastName</option>
+            }
+        </select>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Assign</button>
+    <button type="button" id="cancel-assign">
+        Cancel
+    </button>
+</form>
+

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<WebApplication2.Models.Device>
+@using GridMvc.Html
+@{
+    ViewData["Title"] = "Devices List";
+}
+
+<div class="container pt-5">
+    <div class="row mb-3">
+        <div class="col-md-12 text-right">
+            <a href="@Url.Action("CreateDevice")" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> Add New Device
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Devices List</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        @Html.Grid(Model).Named("UserGrid").Columns(c =>
+                   {
+                       c.Add(x => x.DeviceId).Titled("Device ID").Sortable(true);
+                       c.Add(x => x.TagNumber).Titled("Tag Number").Sortable(true);
+                       c.Add(x => x.Category).Titled("Category").Sortable(true);
+                       c.Add(x => x.StaffName).Titled("Staff Name").Sortable(true);
+                       c.Add(x => x.Department).Titled("Department").Sortable(true).Filterable(true);
+                       c.Add()
+                           .Encoded(false)
+                           .Sanitized(false)
+                           .SetWidth(30)
+                           .RenderValueAs(o => Html.ActionLink("View", "Edit", new { id = o.DeviceId }, new { @class = "btn btn-success btn-sm" }));
+                       c.Add()
+                           .Encoded(false)
+                           .Sanitized(false)
+                           .SetWidth(30)
+                           .RenderValueAs(o => Html.ActionLink("Edit", "Edit", new { id = o.DeviceId }, new { @class = "btn btn-primary btn-sm" }));
+
+                   }).WithPaging(15).EmptyText("No data found")
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+    @Styles.Render("~/Content/Gridmvc")
+    @Styles.Render("~/Content/Site")
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .table thead th {
+            background-color: #343a40; /* Dark gray background */
+            color: white !important; /* White text */
+        }
+
+            .table thead th a {
+                color: white !important; /* White text */
+            }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+    </style>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/Gridmvc")
+}

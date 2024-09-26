@@ -1,0 +1,168 @@
+﻿@model WebApplication2.Models.Device
+
+@{
+    ViewBag.Title = "Create Device";
+}
+<link href="~/Content/SearchBar.css" rel="stylesheet" />
+<link href="~/css/loaderModal.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<div class="container mt-5">
+    <h2 class="mb-4">Add Device</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="card">
+            <div class="card-header">
+                <h5>Device Details</h5>
+            </div>
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.TagNumber, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.TagNumber, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TagNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.CategoryId, Model.CategoryList, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Note, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Note, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Note, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.IsRejected, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.CheckBoxFor(model => model.IsRejected, new { @class = "form-check-input" })
+                        @Html.ValidationMessageFor(model => model.IsRejected, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.IsStored, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.CheckBoxFor(model => model.IsStored, new { @class = "form-check-input", id = "IsStoredCheck" })
+                        @Html.ValidationMessageFor(model => model.IsStored, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.IsReserved, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.CheckBoxFor(model => model.IsReserved, new { @class = "form-check-input", id = "IsReservedCheck" })
+                        @Html.ValidationMessageFor(model => model.IsReserved, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div id="StaffInfo" style="display: none;" class="mt-4">
+                    <h5 class="mb-3 text-white bg-dark p-2 rounded">Staff Information</h5>
+
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Staff.staff_id, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                @Html.EditorFor(model => model.Staff.staff_id, new { htmlAttributes = new { @class = "form-control", id = "staffIdInput" } })
+                                <div class="input-group-append">
+                                    <button id="searchButton" class="btn btn-primary" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.Staff.staff_id, "", new { @class = "text-danger" })
+                        </div>
+                        <div id="messageContainer" class="message col-md-10 offset-md-2" style="margin-top: 10px;"></div>
+                    </div>
+
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Staff.staff_name_en, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.Staff.staff_name_en, new { htmlAttributes = new { @class = "form-control", id = "nameInput" } })
+                            @Html.ValidationMessageFor(model => model.Staff.staff_name_en, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Staff.department_en, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.Staff.department_en, new { htmlAttributes = new { @class = "form-control", id = "departmentInput" } })
+                            @Html.ValidationMessageFor(model => model.Staff.department_en, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-6">
+
+                        <a href="/Device/Index" class="btn btn-dark">Cancel</a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus-circle"></i> Create
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#searchButton').click(function (event) {
+            event.preventDefault();
+
+            var staffId = $('#staffIdInput').val();
+            var messageContainer = $('#messageContainer');
+            messageContainer.empty();
+
+            if (staffId) {
+                $.ajax({
+                    url: '/api/staff/' + encodeURIComponent(staffId),
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        const userData = JSON.parse(data);
+                        if (userData && userData.length > 0) {
+                            $('#nameInput').val(userData[0].staff_name_en);
+                            $('#departmentInput').val(userData[0].department_en);
+                        } else {
+                            messageContainer.html('<div class="text-danger">No data found for the given Staff ID.</div>');
+                        }
+                    },
+                    error: function () {
+                        messageContainer.html('<div class="text-danger">Staff ID is not valid.</div>');
+                    }
+                });
+            } else {
+                messageContainer.html('<div class="text-danger">Please enter a staff ID.</div>');
+            }
+        });
+
+        $('#IsReservedCheck').change(function () {
+            if ($(this).is(':checked')) {
+                $('#StaffInfo').show(); // Show staff info when checked
+            } else {
+                $('#StaffInfo').hide(); // Hide staff info when unchecked
+            }
+        });
+    });
+</script>
