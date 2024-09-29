@@ -49,7 +49,7 @@
             </div>
 
             @*<div id="StaffInfo" style="@(!Model.Device.IsStored ? "display: none;" : "")" class="mt-4">*@
-                <div id="StaffInfo" style="@(Model.Device.Status != WebApplication2.Models.StatusOption.IsStored? "display: none;" : "")" class="mt-4">
+                <div id="StaffInfo" style="@(Model.Device.Status != WebApplication2.Models.StatusOption.IsReserved? "display: none;" : "")" class="mt-4">
 
                     <h5 class="mb-3 text-white bg-dark p-2 rounded">Staff Information</h5>
 
