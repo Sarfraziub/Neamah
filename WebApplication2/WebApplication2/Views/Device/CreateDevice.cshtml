@@ -49,7 +49,7 @@
                 <div class="form-group row">
                     @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "col-md-2 col-form-label" })
                     <div class="col-md-6">
-                        @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-control" })
+                        @Html.EnumDropDownListFor(model => model.Status, new { @class = "form-control", @id = "StatusDropdown" })
                         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -141,12 +141,21 @@
             }
         });
 
-        $('#IsReservedCheck').change(function () {
-            if ($(this).is(':checked')) {
-                $('#StaffInfo').show(); // Show staff info when checked
+        $('#StatusDropdown').change(function () {
+            var selectedValue = $(this).val(); // Get the selected value as string
+
+            // Ensure you're comparing correctly; '3' or 3 depending on the value type
+            if (selectedValue == '3') { // Using == to compare loosely (string and integer)
+                $('#StaffInfo').show(); // Show staff info section
             } else {
-                $('#StaffInfo').hide(); // Hide staff info when unchecked
+                $('#departmentInput').val('');
+                $('#nameInput').val('');
+                $('#staffIdInput').val('');
+                $('#StaffInfo').hide(); // Hide staff info section
             }
         });
+
+        // Trigger the change event on page load to ensure the correct visibility
+        $('#StatusDropdown').trigger('change');
     });
 </script>
