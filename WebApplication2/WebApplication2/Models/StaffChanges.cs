@@ -21,6 +21,8 @@ namespace WebApplication2.Models
         public string StaffName { get; set; }
 
         public string Department { get; set; }
+        public string DepartmentHead { get; set; }
+        public string DepartmentEmail { get; set; }
 
         [Display(Name = "Changed By")]
         public string ChangedBy { get; set; }
@@ -31,5 +33,6 @@ namespace WebApplication2.Models
 
         [Display(Name = "Note")]
         public string ChangeNote { get; set; }
+        public string AttachmentPath { get; set; }
     }
 }

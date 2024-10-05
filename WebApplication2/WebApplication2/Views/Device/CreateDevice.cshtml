@@ -11,7 +11,7 @@
 <div class="container mt-5">
     <h2 class="mb-4">Add Device</h2>
 
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("CreateDevice", "Device", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
 
@@ -86,6 +86,27 @@
                         <div class="col-md-6">
                             @Html.EditorFor(model => model.Staff.department_en, new { htmlAttributes = new { @class = "form-control", id = "departmentInput" } })
                             @Html.ValidationMessageFor(model => model.Staff.department_en, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Staff.department_head, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.Staff.department_head, new { htmlAttributes = new { @class = "form-control", id = "department_head" } })
+                            @Html.ValidationMessageFor(model => model.Staff.department_head, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Staff.email, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                        <div class="col-md-6">
+                            @Html.EditorFor(model => model.Staff.email, new { htmlAttributes = new { @class = "form-control", id = "email" } })
+                            @Html.ValidationMessageFor(model => model.Staff.email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Staff.File, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(model => model.Staff.File, new { type = "file", accept = "application/pdf", @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Staff.File, "", new { @class = "text-danger" })
                         </div>
                     </div>
                 </div>

@@ -50,7 +50,7 @@
                 </div>
             </div>
 
-            <div id="StaffInfo" style="@(Model.Device.Status != WebApplication2.Models.StatusOption.IsStored ? "display: none;" : "")" class="mt-4">
+            <div id="StaffInfo" style="@(Model.Device.Status != WebApplication2.Models.StatusOption.IsReserved ? "display: none;" : "")" class="mt-4">
                 <h5 class="mb-3 text-white bg-dark p-2 rounded">Staff Information</h5>
 
                 <div class="form-group row">
@@ -73,14 +73,34 @@
                         @Html.DisplayFor(model => model.Device.Department, new { @class = "form-control-plaintext" })
                     </div>
                 </div>
-            </div>
-
-            <div class="form-group row">
-                @Html.LabelFor(model => model.Device.Note, htmlAttributes: new { @class = "col-md-2 col-form-label" })
-                <div class="col-md-6">
-                    @Html.DisplayFor(model => model.Device.Note, new { @class = "form-control-plaintext" })
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Device.DepartmentHead, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.DisplayFor(model => model.Device.DepartmentHead, new { @class = "form-control-plaintext" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Device.DepartmentHeadEmail, htmlAttributes: new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.DisplayFor(model => model.Device.DepartmentHeadEmail, new { @class = "form-control-plaintext" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    @Html.LabelFor(model => model.Device.Note, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+                    <div class="col-md-6">
+                        @Html.DisplayFor(model => model.Device.Note, new { @class = "form-control-plaintext" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Attachment</label>
+                    <div class="col-md-6">
+                        @if(!string.IsNullOrEmpty(Model.Device.AttachmentPath)){
+                            <a href="@Model.Device.AttachmentPath" target="_blank">View Pdf</a>
+                        }
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 

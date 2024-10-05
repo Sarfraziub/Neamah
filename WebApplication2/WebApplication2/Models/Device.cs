@@ -45,8 +45,11 @@ namespace WebApplication2.Models
         [Display(Name = "Staff Name")]
         public string StaffName { get; set; }
         public string Department { get; set; }
-        
+        public string DepartmentHead { get; set; }
+        public string DepartmentHeadEmail { get; set; }
         public int CategoryId { get; set; }
+        [NotMapped]
+        public string AttachmentPath { get; set; }
         public IEnumerable<SelectListItem> CategoryList { get; set; }
     }
     public enum StatusOption

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -68,6 +70,14 @@ namespace WebApplication1.Controllers
         {
             try
             {
+                //if(device.Status == StatusOption.IsReserved)
+                //{
+                //    if (device.Staff.File == null)
+                //    {
+                //        ViewBag.ErrorMsg = "Attachment must be selected!";
+                //        return View(device);
+                //    }
+                //}
                 var category = GetCategoryNameById(device.CategoryId);
                 //if (ModelState.IsValid)
                 //{
@@ -76,19 +86,41 @@ namespace WebApplication1.Controllers
                     device.StaffId = device.Staff.staff_id;
                     device.StaffName = device.Staff.staff_name_en;
                     device.Department = device.Staff.department_en;
+                    device.DepartmentHead = device.Staff.department_head;
+                    device.DepartmentHeadEmail = device.Staff.email;
                     _context.Devices.Add(device);
                     _context.SaveChanges();
 
                 var userNameParts = User.Identity.Name.Split('\\');
                 var userName = userNameParts.Length > 1 ? userNameParts[1] : User.Identity.Name;
+                string fileName = string.Empty;
+                if (device.Staff.File!=null)
+                {
+                    fileName = Path.GetFileName(device.Staff.File.FileName);
+                    string extension = Path.GetExtension(fileName);
+                    if (extension.ToLower() == ".pdf")
+                    {
+                        // Save file
+                        string path = Server.MapPath("~/Uploads/");
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        fileName = Guid.NewGuid().ToString() + extension;
+                        device.Staff.File.SaveAs(Path.Combine(path, fileName));
+                    }
+                }
                 var staff = new StaffChanges
                 {
                     DeviceId = device.DeviceId,
                     StaffId = device.StaffId,
                     StaffName = device.StaffName,
                     Department = device.Department,
+                    DepartmentHead = device.DepartmentHead,
+                    DepartmentEmail = device.DepartmentHeadEmail,
                     ChangedBy = userName,
                     DateTime = DateTime.Now,
+                    AttachmentPath = "/Uploads/"+ fileName
                 };
                 _context.StaffChanges.Add(staff);
                 _context.SaveChanges();
@@ -127,6 +159,8 @@ namespace WebApplication1.Controllers
             new SelectListItem { Value = "10", Text = "Camera" },
             new SelectListItem { Value = "11", Text = "Speaker" }
     };
+            if(staffChanges.Count>0)
+                device.AttachmentPath = staffChanges[0].AttachmentPath;
             var viewModel = new DeviceEditViewModel
             {
                 Device = device,
@@ -161,6 +195,8 @@ namespace WebApplication1.Controllers
             new SelectListItem { Value = "10", Text = "Camera" },
             new SelectListItem { Value = "11", Text = "Speaker" }
     };
+            if (staffChanges.Count > 0)
+                device.AttachmentPath = staffChanges[0].AttachmentPath;
             var viewModel = new DeviceEditViewModel
             {
                 Device = device,
@@ -183,6 +219,25 @@ namespace WebApplication1.Controllers
                 {
                     return HttpNotFound();
                 }
+                string fileName = string.Empty;
+                if (device.Staff.File != null)
+                {
+                    fileName = Path.GetFileName(device.Staff.File.FileName);
+                    string extension = Path.GetExtension(fileName);
+                    if (extension.ToLower() == ".pdf")
+                    {
+                        // Save file
+                        string path = Server.MapPath("~/Uploads/");
+                        if (!Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
+                        fileName = Guid.NewGuid().ToString() + extension;
+                        device.Staff.File.SaveAs(Path.Combine(path, fileName));
+                        existingDevice.AttachmentPath = "/Uploads/"+fileName;
+                    }
+                }
+                
                 if (existingDevice.StaffId != device.StaffId)
                 {
                     var userNameParts = User.Identity.Name.Split('\\');
@@ -195,9 +250,16 @@ namespace WebApplication1.Controllers
                         Department = device.Department,
                         ChangedBy = userName,
                         ChangeNote = device.Note,
-                        DateTime = DateTime.Now
+                        DateTime = DateTime.Now,
+                        AttachmentPath = existingDevice.AttachmentPath
                     };
                     _context.StaffChanges.Add(staffChange);
+                }
+                else if (device.Staff.File != null)
+                {
+                    var staff = _context.StaffChanges.Where(x => x.DeviceId == device.DeviceId).FirstOrDefault();
+                    staff.AttachmentPath = existingDevice.AttachmentPath;
+                    _context.SaveChanges();
                 }
                 device.Category = category;
                 device.CreatedAt = DateTime.Now;

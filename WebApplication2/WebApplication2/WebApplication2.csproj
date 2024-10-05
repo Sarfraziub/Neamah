@@ -178,6 +178,22 @@
     <Compile Include="Migrations\202409261729416_IsAdminField.designer.cs">
       <DependentUpon>202409261729416_IsAdminField.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202410021707210_added-twofield-device.cs" />
+    <Compile Include="Migrations\202410021707210_added-twofield-device.designer.cs">
+      <DependentUpon>202410021707210_added-twofield-device.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202410031427108_staff-fields.cs" />
+    <Compile Include="Migrations\202410031427108_staff-fields.designer.cs">
+      <DependentUpon>202410031427108_staff-fields.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202410051946364_attachment-path.cs" />
+    <Compile Include="Migrations\202410051946364_attachment-path.designer.cs">
+      <DependentUpon>202410051946364_attachment-path.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202410052029273_remove-cols.cs" />
+    <Compile Include="Migrations\202410052029273_remove-cols.designer.cs">
+      <DependentUpon>202410052029273_remove-cols.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\ProductAssociation.cs" />
@@ -261,6 +277,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\photo\" />
+    <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -298,6 +315,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202409261729416_IsAdminField.resx">
       <DependentUpon>202409261729416_IsAdminField.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202410021707210_added-twofield-device.resx">
+      <DependentUpon>202410021707210_added-twofield-device.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202410031427108_staff-fields.resx">
+      <DependentUpon>202410031427108_staff-fields.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202410051946364_attachment-path.resx">
+      <DependentUpon>202410051946364_attachment-path.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202410052029273_remove-cols.resx">
+      <DependentUpon>202410052029273_remove-cols.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
