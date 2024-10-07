@@ -10,9 +10,13 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using WebApplication2.Models;
 using WebApplication2.ViewModel;
+using System.Configuration;
+using System.Net.Mail;
+using System.Web.Services.Description;
 
 namespace WebApplication1.Controllers
 {
@@ -66,18 +70,10 @@ namespace WebApplication1.Controllers
             return View(model);
         }
         [HttpPost]
-        public ActionResult CreateDevice(Device device)
+        public async Task<ActionResult> CreateDevice(Device device)
         {
             try
             {
-                //if(device.Status == StatusOption.IsReserved)
-                //{
-                //    if (device.Staff.File == null)
-                //    {
-                //        ViewBag.ErrorMsg = "Attachment must be selected!";
-                //        return View(device);
-                //    }
-                //}
                 var category = GetCategoryNameById(device.CategoryId);
                 //if (ModelState.IsValid)
                 //{
@@ -124,6 +120,10 @@ namespace WebApplication1.Controllers
                 };
                 _context.StaffChanges.Add(staff);
                 _context.SaveChanges();
+                if (!string.IsNullOrEmpty(device.DepartmentHeadEmail))
+                {
+                  await sendEmail(device);
+                }
                 return RedirectToAction(nameof(Index));
                 //}
                 //return View(device);
@@ -208,7 +208,7 @@ namespace WebApplication1.Controllers
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Device device)
+        public async Task<ActionResult> Edit(Device device)
         {
             if (ModelState.IsValid)
             {
@@ -248,6 +248,8 @@ namespace WebApplication1.Controllers
                         StaffId = device.StaffId,
                         StaffName = device.StaffName,
                         Department = device.Department,
+                        DepartmentHead = device.DepartmentHead,
+                        DepartmentEmail = device.DepartmentHeadEmail,
                         ChangedBy = userName,
                         ChangeNote = device.Note,
                         DateTime = DateTime.Now,
@@ -265,6 +267,11 @@ namespace WebApplication1.Controllers
                 device.CreatedAt = DateTime.Now;
                 _context.Entry(existingDevice).CurrentValues.SetValues(device);
                 _context.SaveChanges();
+                var existingStaff = _context.StaffChanges.Where(x => x.DeviceId == device.DeviceId).FirstOrDefault();
+                if(existingStaff.DepartmentEmail.ToLower() != device.DepartmentHeadEmail.ToLower())
+                {
+                   await sendEmail(device);
+                }
                 return RedirectToAction("Index");
             }
             return View(device);
@@ -344,12 +351,97 @@ namespace WebApplication1.Controllers
             var category = categories.FirstOrDefault(c => c.Value == categoryId.ToString());
             return category?.Text;
         }
+        private async Task sendEmail(Device device)
+        {
+            var smtpServer = ConfigurationManager.AppSettings["SmtpSettings:Server"];
+            var smtpPort = ConfigurationManager.AppSettings["SmtpSettings:Port"];
+            var smtpUsername = ConfigurationManager.AppSettings["SmtpSettings:Username"];
+            var smtpPassword = ConfigurationManager.AppSettings["SmtpSettings:Password"];
 
+            SMTPEmailObject emailObject = new SMTPEmailObject
+            {
+                Port = int.TryParse(smtpPort, out int port) && port > 0 ? port : 587,
+                Server = smtpServer,
+                From = smtpUsername,
+                Username = smtpUsername,
+                Password = smtpPassword,
+
+                To = device.DepartmentHeadEmail,
+                Subject = "Department Head Assigned",
+                Body = $@"<p>Dear 
+                                    {device.DepartmentHead},</p>
+                            <p>We would like to inform you that there has been a change in the staff assignment for the <strong>{device.Department}</strong> department.</p>
+                            <p><strong>Details of the Change:</strong></p>
+                            <ul>
+                                <li><strong>Device ID:</strong> {device.DeviceId}</li>
+                                <li><strong>Staff ID:</strong> {device.StaffId}</li>
+                                <li><strong>Staff Name:</strong> {device.StaffName}</li>
+                                <li><strong>Department:</strong> {device.Department}</li>
+                                <li><strong>Assigned Department Head:</strong> {device.DepartmentHead}</li>
+                                <li><strong>Change Note:</strong> {device.Note}</li>
+                                <li><strong>Date of Change:</strong> {DateTime.Now}</li>
+                            </ul>
+                            <p>If you have any questions or need further clarification, please don't hesitate to reach out.</p>
+                            <p>Best regards,</p>
+                            <p>{device.Department}</p>"
+
+            };
+
+
+            var response = await SendEmailAsync(emailObject);
+            if (response)
+                TempData["SuccessMessage"] = "An email has been sent with instructions to reset your password.";
+            else
+                TempData["ErrorMessage"] = "Error while sending email";
+
+        }
+        public static async Task<bool> SendEmailAsync(SMTPEmailObject emailObject)
+        {
+            try
+            {
+                using (var mailMessage = new MailMessage())
+                {
+                    mailMessage.From = new MailAddress(emailObject.From);
+                    mailMessage.To.Add(emailObject.To);
+                    mailMessage.Subject = emailObject.Subject;
+                    mailMessage.Body = emailObject.Body;
+                    mailMessage.IsBodyHtml = true; // Set to false if you are sending plain text
+
+                    using (var smtpClient = new SmtpClient(emailObject.Server, emailObject.Port))
+                    {
+                        smtpClient.Credentials = new NetworkCredential(emailObject.Username, emailObject.Password);
+                        smtpClient.EnableSsl = true; // Set to true if your SMTP server requires SSL
+                        await smtpClient.SendMailAsync(mailMessage);
+                    }
+                }
+
+                return true; // Email sent successfully
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending email: {ex.Message}");
+                return false; // Indicate failure
+            }
+        }
     }
     public class DeviceViewModel
     {
         public IEnumerable<Device> Devices { get; set; }
         public bool IsAdmin { get; set; }
     }
+    public class SMTPEmailObject
+    {
+        public string Server { get; set; }
+        public int Port { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string From { get; set; }
 
+        public string To { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+
+
+
+    }
 }

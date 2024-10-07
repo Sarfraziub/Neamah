@@ -13,6 +13,12 @@
             </a>
         </div>
     </div>
+    <!-- Search input for filtering -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search" />
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -21,7 +27,7 @@
                     <h5 class="mb-0">Devices List</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table">
+                    <table class="table" id="devicesTable">
                         @Html.Grid(Model.Devices).Named("UserGrid").Columns(c =>
                    {
                        c.Add(x => x.DeviceId).Titled("Device ID").Sortable(true);
@@ -71,4 +77,13 @@
 
 @section scripts {
     @Scripts.Render("~/bundles/Gridmvc")
+    <script>document.getElementById('searchInput').addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('.table tbody tr');
+
+            rows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                row.style.display = rowText.includes(filter) ? '' : 'none';
+            });
+        });</script>
 }
