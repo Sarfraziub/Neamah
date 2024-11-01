@@ -22,8 +22,12 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
+                <ul class="navbar-nav">
                     <li>@Html.ActionLink("Device", "Index", "Device", new { area = "" }, new { @class = "nav-link" })</li>
+                    <li>@Html.ActionLink("User Management", "Index", "User", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+                <ul class="navbar-nav">
+                    @*<li>@Html.ActionLink("User Management", "Index", "User", new { area = "" }, new { @class = "nav-link" })</li>*@
                 </ul>
                 @if (User.Identity.Name.Contains('\\'))
                 {

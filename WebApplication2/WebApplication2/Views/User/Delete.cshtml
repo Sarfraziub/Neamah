@@ -10,48 +10,49 @@
 <div>
     <h4>User</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
+    <div class="card-body">
+        <div class="form-group row">
+            @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.FirstName, new { @class = "form-control-plaintext" })
+            </div>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.LastName, new { @class = "form-control-plaintext" })
+            </div>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.Email, new { @class = "form-control-plaintext" })
+            </div>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.Department, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.Department, new { @class = "form-control-plaintext" })
+            </div>
+        </div>
 
-        @*<dt>
-                @Html.DisplayNameFor(model => model.DeviceId)
-            </dt>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.IsAdmin, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.IsAdmin, new { @class = "form-control-plaintext" })
+            </div>
+        </div>
 
-            <dd>
-                @Html.DisplayFor(model => model.DeviceId)
-            </dd>*@
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Department)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Department)
-        </dd>
-
-    </dl>
+        <div class="form-group row">
+            @Html.LabelFor(model => model.IsSuperAdmin, htmlAttributes: new { @class = "col-md-2 col-form-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.IsSuperAdmin, new { @class = "form-control-plaintext" })
+            </div>
+        </div>
+    </div>
 
     @using (Html.BeginForm())
     {

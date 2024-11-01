@@ -50,6 +50,8 @@ namespace WebApplication2.Models
         public int CategoryId { get; set; }
         [NotMapped]
         public string AttachmentPath { get; set; }
+
+        //public string FileName { get; set; }
         public IEnumerable<SelectListItem> CategoryList { get; set; }
     }
     public enum StatusOption

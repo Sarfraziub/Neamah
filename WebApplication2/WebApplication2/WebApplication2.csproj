@@ -166,33 +166,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202409251225025_20240925addnote.cs" />
-    <Compile Include="Migrations\202409251225025_20240925addnote.designer.cs">
-      <DependentUpon>202409251225025_20240925addnote.cs</DependentUpon>
+    <Compile Include="Migrations\202410170639340_initialupdate17102024.cs" />
+    <Compile Include="Migrations\202410170639340_initialupdate17102024.designer.cs">
+      <DependentUpon>202410170639340_initialupdate17102024.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202409260708169_change-columns.cs" />
-    <Compile Include="Migrations\202409260708169_change-columns.designer.cs">
-      <DependentUpon>202409260708169_change-columns.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202409261729416_IsAdminField.cs" />
-    <Compile Include="Migrations\202409261729416_IsAdminField.designer.cs">
-      <DependentUpon>202409261729416_IsAdminField.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202410021707210_added-twofield-device.cs" />
-    <Compile Include="Migrations\202410021707210_added-twofield-device.designer.cs">
-      <DependentUpon>202410021707210_added-twofield-device.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202410031427108_staff-fields.cs" />
-    <Compile Include="Migrations\202410031427108_staff-fields.designer.cs">
-      <DependentUpon>202410031427108_staff-fields.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202410051946364_attachment-path.cs" />
-    <Compile Include="Migrations\202410051946364_attachment-path.designer.cs">
-      <DependentUpon>202410051946364_attachment-path.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202410052029273_remove-cols.cs" />
-    <Compile Include="Migrations\202410052029273_remove-cols.designer.cs">
-      <DependentUpon>202410052029273_remove-cols.cs</DependentUpon>
+    <Compile Include="Migrations\202410301817521_IsSuperAdmin.cs" />
+    <Compile Include="Migrations\202410301817521_IsSuperAdmin.designer.cs">
+      <DependentUpon>202410301817521_IsSuperAdmin.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Device.cs" />
@@ -200,6 +180,11 @@
     <Compile Include="Models\StaffChanges.cs" />
     <Compile Include="Models\Users.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\ApplicationDbContext.cs" />
     <Compile Include="ViewModel\DeviceEditViewModel.cs" />
     <Compile Include="ViewModel\Staff.cs" />
@@ -234,6 +219,10 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Grid.mvc.readme" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.ru.js" />
@@ -274,6 +263,8 @@
     <Content Include="Views\Device\Delete.cshtml" />
     <Content Include="Views\Device\AssignDevice.cshtml" />
     <Content Include="Views\Device\View.cshtml" />
+    <Content Include="Views\User\Details.cshtml" />
+    <Content Include="Views\User\Unauthorized.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\photo\" />
@@ -307,26 +298,11 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202409251225025_20240925addnote.resx">
-      <DependentUpon>202409251225025_20240925addnote.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202410170639340_initialupdate17102024.resx">
+      <DependentUpon>202410170639340_initialupdate17102024.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202409260708169_change-columns.resx">
-      <DependentUpon>202409260708169_change-columns.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202409261729416_IsAdminField.resx">
-      <DependentUpon>202409261729416_IsAdminField.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202410021707210_added-twofield-device.resx">
-      <DependentUpon>202410021707210_added-twofield-device.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202410031427108_staff-fields.resx">
-      <DependentUpon>202410031427108_staff-fields.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202410051946364_attachment-path.resx">
-      <DependentUpon>202410051946364_attachment-path.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202410052029273_remove-cols.resx">
-      <DependentUpon>202410052029273_remove-cols.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202410301817521_IsSuperAdmin.resx">
+      <DependentUpon>202410301817521_IsSuperAdmin.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

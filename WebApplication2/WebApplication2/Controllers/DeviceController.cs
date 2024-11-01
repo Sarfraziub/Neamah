@@ -33,11 +33,12 @@ namespace WebApplication1.Controllers
             Users user = _context.Users.Where(x => x.FirstName == userName).FirstOrDefault();
             if (user == null)
             {
-                Users addUser = new Users() { FirstName = userName, CreatedAt = DateTime.Now, IsAdmin = true };
-                _context.Users.Add(addUser);
-                _context.SaveChanges();
+                //Users addUser = new Users() { FirstName = userName, CreatedAt = DateTime.Now, IsAdmin = true };
+                //_context.Users.Add(addUser);
+                //_context.SaveChanges();
             };
-            bool? isAdmin = _context.Users.Where(x => x.FirstName == userName).FirstOrDefault().IsAdmin;
+            bool? isAdmin = user.IsAdmin;
+            if(isAdmin!=true) isAdmin = user.IsSuperAdmin ?? false;
             var viewModel = new DeviceViewModel
             {
                 Devices = _context.Devices.ToList(),
@@ -210,8 +211,9 @@ namespace WebApplication1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Device device)
         {
-            if (ModelState.IsValid)
-            {
+            device.Status = device.Status;
+            //if (ModelState.IsValid)
+            //{
                 var existingDevice = _context.Devices.Find(device.DeviceId);
                 var category = GetCategoryNameById(device.CategoryId);
 
@@ -267,13 +269,15 @@ namespace WebApplication1.Controllers
                 device.CreatedAt = DateTime.Now;
                 _context.Entry(existingDevice).CurrentValues.SetValues(device);
                 _context.SaveChanges();
-                var existingStaff = _context.StaffChanges.Where(x => x.DeviceId == device.DeviceId).FirstOrDefault();
-                if(existingStaff.DepartmentEmail.ToLower() != device.DepartmentHeadEmail.ToLower())
-                {
-                   await sendEmail(device);
-                }
-                return RedirectToAction("Index");
+
+            var existingStaff = _context.StaffChanges.Where(x => x.DeviceId == device.DeviceId).FirstOrDefault();
+            if (existingStaff.DepartmentEmail.ToLower() != device.DepartmentHeadEmail.ToLower())
+            {
+                await sendEmail(device);
             }
+
+            return RedirectToAction("Index");
+            //}
             return View(device);
         }
         public ActionResult Delete(int? id)
@@ -353,16 +357,22 @@ namespace WebApplication1.Controllers
         }
         private async Task sendEmail(Device device)
         {
+
+
             var smtpServer = ConfigurationManager.AppSettings["SmtpSettings:Server"];
             var smtpPort = ConfigurationManager.AppSettings["SmtpSettings:Port"];
             var smtpUsername = ConfigurationManager.AppSettings["SmtpSettings:Username"];
             var smtpPassword = ConfigurationManager.AppSettings["SmtpSettings:Password"];
+            //var smtpServer = "192.168.100.12";
+            //var smtpPort = "25";
+            //var smtpUsername = "Your username";
+            //var smtpPassword = "Your password";
 
             SMTPEmailObject emailObject = new SMTPEmailObject
             {
-                Port = int.TryParse(smtpPort, out int port) && port > 0 ? port : 587,
+                Port = 25, //int.TryParse(smtpPort, out int port) && port > 0 ? port : 25,
                 Server = smtpServer,
-                From = smtpUsername,
+                From = smtpUsername,//"nalmalki@pscc.med.sa",
                 Username = smtpUsername,
                 Password = smtpPassword,
 
@@ -390,7 +400,7 @@ namespace WebApplication1.Controllers
 
             var response = await SendEmailAsync(emailObject);
             if (response)
-                TempData["SuccessMessage"] = "An email has been sent with instructions to reset your password.";
+                TempData["SuccessMessage"] = "An email has been sent.";
             else
                 TempData["ErrorMessage"] = "Error while sending email";
 

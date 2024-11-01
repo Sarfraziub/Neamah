@@ -87,14 +87,14 @@
                 <div class="form-group row">
                     @Html.LabelFor(model => model.Device.DepartmentHead, htmlAttributes: new { @class = "col-md-2 col-form-label" })
                     <div class="col-md-6">
-                        @Html.EditorFor(model => model.Device.DepartmentHead, new { htmlAttributes = new { @class = "form-control", id = "department_head" } })
+                        @Html.EditorFor(model => model.Device.DepartmentHead, new { htmlAttributes = new { @class = "form-control", id = "department_headInput" } })
                         @Html.ValidationMessageFor(model => model.Device.DepartmentHead, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <div class="form-group row">
                     @Html.LabelFor(model => model.Device.DepartmentHeadEmail, htmlAttributes: new { @class = "col-md-2 col-form-label" })
                     <div class="col-md-6">
-                        @Html.EditorFor(model => model.Device.DepartmentHeadEmail, new { htmlAttributes = new { @class = "form-control", id = "email" } })
+                        @Html.EditorFor(model => model.Device.DepartmentHeadEmail, new { htmlAttributes = new { @class = "form-control", id = "head_emailInput" } })
                         @Html.ValidationMessageFor(model => model.Device.DepartmentHeadEmail, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -182,6 +182,9 @@
                         if (userData && userData.length > 0) {
                             $('#nameInput').val(userData[0].staff_name_en);
                             $('#departmentInput').val(userData[0].department_en);
+                            $('#department_headInput').val(userData[0].report_to_name);
+                            $('#head_emailInput').val(userData[0].report_to_email);
+
                         } else {
                             messageContainer.html('<div class="text-danger">No data found for the given Staff ID.</div>');
                         }
@@ -202,6 +205,11 @@
             if (selectedValue == '3') { // Using == to compare loosely (string and integer)
                 $('#StaffInfo').show(); // Show staff info section
             } else {
+                $('#departmentInput').val('');
+                $('#nameInput').val('');
+                $('#department_headInput').val('');
+                $('#head_emailInput').val('');
+                $('#staffIdInput').val('');
                 $('#StaffInfo').hide(); // Hide staff info section
             }
         });

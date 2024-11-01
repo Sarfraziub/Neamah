@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebApplication2.Models;
@@ -12,124 +14,108 @@ namespace WebApplication2.Controllers
 {
     public class UserController : Controller
     {
-        private ApplicationDbContext _context = new ApplicationDbContext();
-
-        // GET: Users
-        [Authorize]
-        public ActionResult Index()
+        private readonly ApplicationDbContext _context;
+        public UserController()
         {
-            var users = _context.Users.Include(a=>a.associations).ToList();
-            var viewModel = users.Select(user => new UsersViewModel
-            {
-                UserId = user.UserId,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email,
-                Department = user.Department,
-                DeviceNames = string.Join(", ", user.associations.Select(a => a.Device.DeviceName))
-            }).ToList();
-            return View(viewModel);
+            _context = new ApplicationDbContext();
         }
-
-        // GET: Users/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Users user = _context.Users.Find(id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
-            return View(user);
-        }
-
-        // GET: Users/Create
-        public ActionResult Create()
+        public ActionResult Unauthorized()
         {
             return View();
         }
+        // GET: User
+        public async Task<ActionResult> Index()
+        {
+            string userName = User.Identity.Name.Split('\\')[1].ToString();
+            Users user = _context.Users.Where(x => x.FirstName == userName).FirstOrDefault();
+            if (user == null || (user.IsSuperAdmin ?? false)==false)
+            {
+               return RedirectToAction("Unauthorized");
+            }
+            else
+            {
+                ViewBag.IsAdmin = user.IsAdmin??false;
+                ViewBag.IsSuperAdmin = user.IsSuperAdmin??false;
+            };
+            var users = await _context.Users.ToListAsync();
+            return View(users);
+        }
 
-        // POST: Users/Create
+        // GET: User/Details/5
+        public async Task<ActionResult> Details(int? id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return View();
+            return View(user);
+        }
+
+        // GET: User/Create
+        public ActionResult Create()
+        {
+            Users user = new Users();
+            return View(user);
+        }
+
+        // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Users user)
+        public async Task<ActionResult> Create(Users user)
         {
             if (ModelState.IsValid)
             {
+                user.IsAdmin = user.IsAdmin ?? false;
+                user.IsSuperAdmin = user.IsSuperAdmin ?? false;
                 user.CreatedAt = DateTime.Now;
                 _context.Users.Add(user);
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-
             return View(user);
         }
 
-        // GET: Users/Edit/5
-        public ActionResult Edit(int? id)
+        // GET: User/Edit/5
+        public async Task<ActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Users user = _context.Users.Find(id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) return View();
             return View(user);
         }
 
-        // POST: Users/Edit/5
+        // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Users user)
+        public async Task<ActionResult> Edit(int id, Users user)
         {
             if (ModelState.IsValid)
             {
-                _context.Entry(user).State = System.Data.Entity.EntityState.Modified;
-                _context.SaveChanges();
-                return RedirectToAction("Index");
+                user.UserId = id;
+                user.IsAdmin = user.IsAdmin ?? false;
+                user.IsSuperAdmin = user.IsSuperAdmin ?? false;
+                var existedUser = _context.Users.Where(x => x.UserId == user.UserId).FirstOrDefault();
+                user.CreatedAt = existedUser.CreatedAt;
+                _context.Users.AddOrUpdate(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
             return View(user);
         }
 
-        // GET: Users/Delete/5
-        public ActionResult Delete(int? id)
+        // GET: User/Delete/5
+        public async Task<ActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Users user = _context.Users.Find(id);
-            if (user == null)
-            {
-                return HttpNotFound();
-            }
+            var user = await _context.Users.FindAsync(id);
             return View(user);
         }
 
-        // POST: Users/Delete/5
+        // POST: User/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Users user = _context.Users.Find(id);
+            var user = await _context.Users.FindAsync(id);
             _context.Users.Remove(user);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _context.Dispose();
-            }
-            base.Dispose(disposing);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
     }
 }
